@@ -14,7 +14,7 @@ Condensed Gradient Boosting Decision Tree
 # Installation
 Clone this project then, install the Python package using pip:
 
-`pip install .`
+`pip install cgb`
 
 
 # Usage
