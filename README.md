@@ -4,11 +4,14 @@ Condensed Gradient Boosting Decision Tree
 # Table of contents
 * [Introduction](#Introduction)
 * [Installation](#Installation)
-
-
+* [Usage](#Usage)
+* [Requirements](#Requirements)
+* [Citation](#Citation)
+* [Contributions](#Contributions)
+* [Version](#Version)
 
 # Introduction
-
+Gradient Boosting Machine is a machine learning model for classification and regression problems. In the following, we present a Condensed Gradient Boosting model that works well for multiclass multi-output regression with high precision and speed. 
 
 
 # Installation
