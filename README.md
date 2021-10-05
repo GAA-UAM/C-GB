@@ -63,6 +63,7 @@ scikit-learn - Machine learning in Python
 
 
 # Citation
+[Cite](CITATION.cff) this package as below.
 
 ```yaml
 References:
