@@ -17,9 +17,6 @@ Clone this project then, install the Python package using pip:
 `pip install .`
 
 
-
-
-
 # Usage
 
 
@@ -51,11 +48,13 @@ References:
 ```
 ## How to cite GBNN
 If you are using this package in your paper, please cite our work as follows
+## Keywords
+`Gradient Boosting`, `multi-output regression`, `multiclass-classification regression`
 
 
 # Contributions
 You may improve this project by creating an issue, reporting an improvement or a bug, forking, and of course, sending a pull request to the development branch. 
-The authors and developers involved in this package can be found in the contributor's file.
+The authors and developers involved in this package can be found in the [contributor's file](contributors.txt).
 
 In the following, you will find the different approaches to contribute;
 <ul>
@@ -68,9 +67,6 @@ In the following, you will find the different approaches to contribute;
 ## Key members of GBNN
 [Gonzalo Martínez-Muñoz](https://github.com/gmarmu)
 [Seyedsaman Emami](https://github.com/samanemami)
-
-# Keywords
-`Gradient Boosting`, `multi-output regression`, `multiclass-classification regression`
 
 # Version
 0.1.0
