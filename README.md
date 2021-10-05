@@ -54,6 +54,16 @@ If you are using this package in your paper, please cite our work as follows
 
 
 # Contributions
+You may improve this project by creating an issue, reporting an improvement or a bug, forking, and of course, sending a pull request to the development branch. 
+The authors and developers involved in this package can be found in the contributor's file.
+
+In the following, you will find the different approaches to contribute;
+<ul>
+    <li> Write posts on the blog, Linkedin, your websites about C-GB. </li>
+    <li> Code reviews. </li>
+    <li> Create an issue. </li>
+    <li> Contribute to producing different experiments. </li>
+
 
 ## Key members of GBNN
 [Gonzalo Martínez-Muñoz](https://github.com/gmarmu)
