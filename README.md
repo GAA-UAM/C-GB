@@ -62,7 +62,7 @@ In the following, you will find the different approaches to contribute;
     <li> Code reviews. </li>
     <li> Create an issue. </li>
     <li> Contribute to producing different experiments. </li>
-
+</ul>
 
 ## Key members of GBNN
 [Gonzalo Martínez-Muñoz](https://github.com/gmarmu)
