@@ -712,6 +712,7 @@ class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
         X = check_array(X, dtype=DTYPE, order="C", accept_sparse='csr')
         return self._raw_predict(X)
 
-    def score(self, y_true, y_pred):
-        output_errors = np.average((y_true - y_pred)**2, axis=0)
+    def score(self, X, y):
+        pred = self.predict(X)
+        output_errors = np.average((y - pred)**2, axis=0)
         return np.sqrt(output_errors)
