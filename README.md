@@ -110,7 +110,7 @@ References:
     Keywords:
       - "Gradient Boosting"
       - "multi-output regression"
-      - "multiclass-classification regression"
+      - "multiclass-classification"
 ```
 ## How to cite GBNN
 If you are using this package in your paper, please cite our work as follows
