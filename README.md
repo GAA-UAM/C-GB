@@ -29,6 +29,7 @@ To access more examples, plots, and related codes, please refer to [C_GB-EX](htt
 
 In the following, the implementation of the algorithm for two problems (classification and regression) is described;
 
+### Classification
 ```Python
 import cgb
 import sklearn.datasets as dts
@@ -53,28 +54,33 @@ model.fit(x_train, y_train)
 model.score(x_test, y_test)
 ```
 
+<hr>
+
+### Regression
 ```Python
 import cgb
 import sklearn.datasets as dts
 from sklearn.model_selection import train_test_split
 
-X, y = dts.make_classification(
-    n_samples=100, n_classes=3, n_clusters_per_class=2,
-    random_state=1, n_informative=4)
+X, y = dts.make_regression(n_samples=100, n_features=100, n_targets=3)
 
 x_train, x_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=1)
 
-model = C_GradientBoostingClassifier(max_depth=5,
-                                     subsample=1,
-                                     max_features='sqrt',
-                                     learning_rate=0.1,
-                                     random_state=1,
-                                     criterion="mse",
-                                     loss="deviance",
-                                     n_estimators=100)
+
+model = C_GradientBoostingRegressor(learning_rate=0.1,
+                                    subsample=1,
+                                    max_features="sqrt",
+                                    n_estimators=100,
+                                    max_depth=3,
+                                    random_state=1)
+
 model.fit(x_train, y_train)
+model.predict(x_test)
 model.score(x_test, y_test)
+```
+```output
+array([170.82297721, 133.84200063, 150.02456502])
 ```
 
 # Requirements
