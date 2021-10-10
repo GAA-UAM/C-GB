@@ -17,7 +17,7 @@ Gradient Boosting Machine is a machine learning model for classification and reg
 # Installation
 Clone this project then, install the Python package using pip:
 
-`pip install cgb`
+`pip install .`
 
 
 # Usage
