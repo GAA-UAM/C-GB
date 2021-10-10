@@ -54,9 +54,7 @@ model.fit(x_train, y_train)
 model.score(x_test, y_test)
 ```
 ```output
-"""
 Return the mean accuracy regarding the n_classes.
-"""
 >>> 70%
 ```
 
@@ -86,9 +84,7 @@ model.predict(x_test)
 model.score(x_test, y_test)
 ```
 ```output
-"""
 Return the RMSE for n_outputs
-"""
 >>> array([170.82297721, 133.84200063, 150.02456502])
 ```
 
