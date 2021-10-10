@@ -57,6 +57,7 @@ model.score(x_test, y_test)
 Return the mean accuracy regarding the n_classes.
 >>> 70%
 """
+```
 
 <hr>
 
