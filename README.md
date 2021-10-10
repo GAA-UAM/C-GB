@@ -136,7 +136,8 @@ In the following, you will find the different approaches to contribute;
 ## Updated
 
 ## Date-released
-
+01.Oct.2021
 
 # Related links
 Examples, codes to reproduce the results, and additional experiments. Refer [C_GB-EX](https://github.com/samanemami/C_GB-EX).
+For the condensed model and analysis features, refer to our [paper](#)
