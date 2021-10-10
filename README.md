@@ -52,11 +52,12 @@ model = C_GradientBoostingClassifier(max_depth=5,
                                      n_estimators=100)
 model.fit(x_train, y_train)
 model.score(x_test, y_test)
-
+```
+```output
 """
 Return the mean accuracy regarding the n_classes.
->>> 70%
 """
+>>> 70%
 ```
 
 <hr>
@@ -83,7 +84,8 @@ model = C_GradientBoostingRegressor(learning_rate=0.1,
 model.fit(x_train, y_train)
 model.predict(x_test)
 model.score(x_test, y_test)
-
+```
+```output
 """
 Return the RMSE for n_outputs
 """
