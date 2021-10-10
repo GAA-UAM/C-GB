@@ -89,11 +89,13 @@ Return the RMSE for n_outputs
 ```
 
 # Requirements
-This package uses the following libraries, and imported to the C-GB:
+This package uses the following libraries, which we already defined the dependencies:
 
 <ul>
   <li>numpy - Numerical Python</li>
   <li>scikit-learn - Machine learning in Python</li>
+  <li>scipy</li>
+  <li>numbers</li>
 </ul>
 
 # Citation
