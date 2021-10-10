@@ -22,12 +22,12 @@ Clone this project then, install the Python package using pip:
 
 # Usage
 To train the CGB model for both multiclass classification and multioutput regression, first, it should be installed.
-
 After importing the class, define the model with hyperparameters or use the default values for it.
-
 Models run on both Windows and Linux.
 
-To access more examples and related codes, please refer to [C_GB-EX](https://github.com/samanemami/C_GB-EX).
+To access more examples, plots, and related codes, please refer to [C_GB-EX](https://github.com/samanemami/C_GB-EX).
+
+In the following, the implementation of the algorithm for two problems (classification and regression) is described;
 
 ```Python
 import cgb
@@ -38,22 +38,43 @@ X, y = dts.make_classification(
     n_samples=100, n_classes=3, n_clusters_per_class=2,
     random_state=1, n_informative=4)
 
+x_train, x_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=1)
+
+model = C_GradientBoostingClassifier(max_depth=5,
+                                     subsample=1,
+                                     max_features='sqrt',
+                                     learning_rate=0.1,
+                                     random_state=1,
+                                     criterion="mse",
+                                     loss="deviance",
+                                     n_estimators=100)
+model.fit(x_train, y_train)
+model.score(x_test, y_test)
+```
+
+```Python
+import cgb
+import sklearn.datasets as dts
+from sklearn.model_selection import train_test_split
+
+X, y = dts.make_classification(
+    n_samples=100, n_classes=3, n_clusters_per_class=2,
+    random_state=1, n_informative=4)
 
 x_train, x_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=1)
 
-
-model = cgb.C_GradientBoostingClassifier(max_depth=5,
-                                         subsample=1,
-                                         max_features='sqrt',
-                                         learning_rate=0.1,
-                                         random_state=1,
-                                         criterion="mse",
-                                         loss="deviance",
-                                         n_estimators=100)
-
-cgb.fit(x_train, y_train)
-
+model = C_GradientBoostingClassifier(max_depth=5,
+                                     subsample=1,
+                                     max_features='sqrt',
+                                     learning_rate=0.1,
+                                     random_state=1,
+                                     criterion="mse",
+                                     loss="deviance",
+                                     n_estimators=100)
+model.fit(x_train, y_train)
+model.score(x_test, y_test)
 ```
 
 # Requirements
