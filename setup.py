@@ -7,6 +7,6 @@ setuptools.setup(
     author_email="emami.seyedsaman@uam.es, gonzalo.martinez@uam.es",
     description="Condensed Gradient Boosting Decision Tree",
     packages=['cgb'],
-    install_requires=['numpy', 'numba', 'scikit-learn', 'scipy', 'numbers'],
+    install_requires=['numpy', 'scikit-learn', 'scipy', 'numbers'],
     classifiers=("Programming Language :: Python :: 3")
 )
