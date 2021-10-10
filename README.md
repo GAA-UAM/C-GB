@@ -91,11 +91,10 @@ Return the RMSE for n_outputs
 # Requirements
 This package uses the following libraries, and imported to the C-GB:
 
-numpy - Numerical Python
-scikit-learn - Machine learning in Python
-
-
-
+<ul>
+  <li>numpy - Numerical Python</li>
+  <li>scikit-learn - Machine learning in Python</li>
+</ul>
 
 # Citation
 [Cite](CITATION.cff) this package as below.
@@ -144,5 +143,5 @@ In the following, you will find the different approaches to contribute;
 01.Oct.2021
 
 # Related links
-Examples, codes to reproduce the results, and additional experiments. Refer [C_GB-EX](https://github.com/samanemami/C_GB-EX).
-For the condensed model and analysis features, refer to our [paper](#)
+* Examples, codes to reproduce the results, and additional experiments. Refer [C_GB-EX](https://github.com/samanemami/C_GB-EX).
+* For the condensed model and analysis features, refer to our [paper](#)
