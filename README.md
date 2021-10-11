@@ -17,7 +17,7 @@ Gradient Boosting Machine is a machine learning model for classification and reg
 # Installation
 Clone this project then, install the Python package using pip:
 
-`pip install cgb`
+`pip install .`
 
 
 # Usage
@@ -53,6 +53,10 @@ model = C_GradientBoostingClassifier(max_depth=5,
 model.fit(x_train, y_train)
 model.score(x_test, y_test)
 ```
+```output
+Return the mean accuracy regarding the n_classes.
+>>> 70%
+```
 
 <hr>
 
@@ -80,17 +84,19 @@ model.predict(x_test)
 model.score(x_test, y_test)
 ```
 ```output
-array([170.82297721, 133.84200063, 150.02456502])
+Return the RMSE for n_outputs
+>>> array([170.82297721, 133.84200063, 150.02456502])
 ```
 
 # Requirements
-This package uses the following libraries, and imported to the C-GB:
+This package uses the following libraries, which we already defined the dependencies:
 
-numpy - Numerical Python
-scikit-learn - Machine learning in Python
-
-
-
+<ul>
+  <li>numpy - Numerical Python</li>
+  <li>scikit-learn - Machine learning in Python</li>
+  <li>scipy</li>
+  <li>numbers</li>
+</ul>
 
 # Citation
 [Cite](CITATION.cff) this package as below.
@@ -106,7 +112,7 @@ References:
     Keywords:
       - "Gradient Boosting"
       - "multi-output regression"
-      - "multiclass-classification regression"
+      - "multiclass-classification"
 ```
 ## How to cite GBNN
 If you are using this package in your paper, please cite our work as follows
@@ -139,5 +145,5 @@ In the following, you will find the different approaches to contribute;
 01.Oct.2021
 
 # Related links
-Examples, codes to reproduce the results, and additional experiments. Refer [C_GB-EX](https://github.com/samanemami/C_GB-EX).
-For the condensed model and analysis features, refer to our [paper](#)
+* Examples, codes to reproduce the results, and additional experiments. Refer [C_GB-EX](https://github.com/samanemami/C_GB-EX).
+* For the condensed model and analysis features, refer to our [paper](#)
