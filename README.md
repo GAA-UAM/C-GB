@@ -60,7 +60,7 @@ Return the mean accuracy regarding the n_classes.
 
 <hr>
 
-### Regression
+### Regression/ Multi-label classification
 ```Python
 import cgb
 import sklearn.datasets as dts
