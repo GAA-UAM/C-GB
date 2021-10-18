@@ -28,13 +28,13 @@ Split the data. Here to show the instruction of the model we consider a simple s
 import `C_GradientBoostingClassifier` fro the ``cgb``. For classification, you should use ``deviance`` as the loss function. You may leave other hyperparameters with default values.
 
   >>> model = C_GradientBoostingClassifier(max_depth=5,
-                                         subsample=1,
-                                         max_features='sqrt',
-                                         learning_rate=0.1,
-                                         random_state=1,
-                                         criterion="mse",
-                                         loss="deviance",
-                                         n_estimators=100)
+                                           subsample=1,
+                                           max_features='sqrt',
+                                           learning_rate=0.1,
+                                           random_state=1,
+                                           criterion="mse",
+                                           loss="deviance",
+                                           n_estimators=100)
                                           
  
 
