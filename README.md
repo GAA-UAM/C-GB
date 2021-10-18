@@ -22,7 +22,7 @@ Clone this project then, install the Python package using pip:
 
 # Usage
 To train the CGB model for both multiclass classification and multioutput regression, first, it should be installed.
-After importing the class, define the model with hyperparameters or use the default values for it.
+After importing the class, define the model with [hyperparameters](https://github.com/samanemami/C-GB/blob/main/docs/parameters.rst) or use the default values for it.
 Models run on both Windows and Linux.
 
 To access more examples, plots, and related codes, please refer to [C_GB-EX](https://github.com/samanemami/C_GB-EX).
