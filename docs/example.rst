@@ -64,10 +64,14 @@ import ``C_GradientBoostingRegressor`` from the ``cgb``. For regression, you sho
                                     n_estimators=100,
                                     max_depth=3,
                                     random_state=1)
+
 Fit the model with 100 trees.
+
   >>> model.fit(x_train, y_train)
   
+
 Performance of the model. Returns the RMSE for n_outputs. 
+
   >>> model.score(x_test, y_test)
   
   
