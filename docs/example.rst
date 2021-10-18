@@ -15,14 +15,15 @@ import the ``cgb``
 
 You may fit the model for a dataset with n>2 class labels. Although it works perfectly for binary problems as well.
 
-  >>> X, y = dts.make_classification(
-      n_samples=100, n_classes=3, n_clusters_per_class=2,
-      random_state=1, n_informative=4)
+  >>> X, y = dts.make_classification(n_samples=100, n_classes=3,
+                               n_clusters_per_class=2,
+                               random_state=1, n_informative=4)
  
 Split the data. Here to show the instruction of the model we consider a simple split. We suggest choosing the proper splitting method with regard to your dataset.
 
   >>> x_train, x_test, y_train, y_test = train_test_split(
-      X, y, test_size=0.3, random_state=1)
+    X, y, test_size=0.3, random_state=1)
+
       
 import `C_GradientBoostingClassifier` fro the ``cgb``. For classification, you should use ``deviance`` as the loss function. You may leave other hyperparameters with default values.
 
@@ -35,6 +36,11 @@ import `C_GradientBoostingClassifier` fro the ``cgb``. For classification, you s
                                      loss="deviance",
                                      n_estimators=100)
 
+
 Fit the model with 100 trees
 
   >>> model.fit(x_train, y_train)
+  
+  
+Multi-output regression
+-------------
