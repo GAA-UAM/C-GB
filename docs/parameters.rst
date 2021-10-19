@@ -28,7 +28,7 @@ Common
 C_GradientBoostingClassifier
 -----
 
-- ``loss``: {`deviance`, `ls`}, default = **deviance**
+  - ``loss``: {`deviance`, `ls`}, default = **deviance**
   
     - The loss function for optimization. For the Multi-class/Binary classification, it should be ``deviance``.
 
@@ -36,10 +36,10 @@ C_GradientBoostingClassifier
 
 C_GradientBoostingRegressor
 -----
-- ``loss``: {`deviance`, `ls`}, default = **ls**
+  - ``loss``: {`deviance`, `ls`}, default = **ls**
   
     - The loss function for optimization. For the regression it should set to ``ls``.
 
-- ``metric`` : {`RMSE`, ``euclidean``}, default = **RMSE**
+  - ``metric`` : {`RMSE`, ``euclidean``}, default = **RMSE**
 
     - It returns the error of the model. ``RMSE`` will return the average error on the euclidean space, where ``euclidean`` returns the distance between the real and predicted of each point.
