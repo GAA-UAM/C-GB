@@ -7,7 +7,7 @@ Specifications of the C-GB parameters.
 
 Parameters
 ----
-  - ``loss``: {`deviance`, None}, default = **deviance**
+  - ``loss``: {`deviance`, `ls`}, default = **deviance**
   
     - The loss function for optimization. For the Multi-class/Binary classification, it should be deviance and else for regression.
     
