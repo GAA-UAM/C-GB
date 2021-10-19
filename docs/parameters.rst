@@ -20,7 +20,7 @@ Common
   
     - The number of points for splitting the tree.
 
-        - auto``, ``sqrt`` >> sqrt(n_features)
+        - ``auto``, ``sqrt`` >> sqrt(n_features)
         - ``log2`` >> log2(n_features)
         - ``None`` >> n_features
 
