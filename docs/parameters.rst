@@ -19,11 +19,11 @@ Common
   - ``max_features`` : {‘auto’, ‘sqrt’, ‘log2’}, int or float, default= **None**
   
     - The number of points for splitting the tree.
-    <ul>
-      <li> ``auto``, ``sqrt`` >> sqrt(n_features) </li>
-      <li> ``log2`` >> log2(n_features) </li>
-      <li> ``None`` >> n_features </li> 
-    </ul>
+
+        - auto``, ``sqrt`` >> sqrt(n_features)
+        - ``log2`` >> log2(n_features)
+        - ``None`` >> n_features
+
 
 C_GradientBoostingClassifier
 -----
