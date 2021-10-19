@@ -5,7 +5,7 @@ Parameters
 
 Specifications of the C-GB parameters.
 
-Common
+Base model
 ----
     
   - ``n_estimators`` : int, default = **100**
