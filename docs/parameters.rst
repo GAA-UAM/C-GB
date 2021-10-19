@@ -19,9 +19,11 @@ Common
   - ``max_features`` : {‘auto’, ‘sqrt’, ‘log2’}, int or float, default= **None**
   
     - The number of points for splitting the tree.
-      * ``auto``, ``sqrt`` >> sqrt(n_features)
-      * ``log2`` >> log2(n_features)
-      * ``None`` >> n_features
+    <ul>
+      <li> ``auto``, ``sqrt`` >> sqrt(n_features) </li>
+      <li> ``log2`` >> log2(n_features) </li>
+      <li> ``None`` >> n_features </li> 
+    </ul>
 
 C_GradientBoostingClassifier
 -----
@@ -38,6 +40,6 @@ C_GradientBoostingRegressor
   
     - The loss function for optimization. For the regression it should set to ``ls``.
 
-- ``metric`` : {`RMSE`, ``euclidean``}, default = ** RMSE**
+- ``metric`` : {`RMSE`, ``euclidean``}, default = **RMSE**
 
     - It returns the error of the model. ``RMSE`` will return the average error on the euclidean space, where ``euclidean`` returns the distance between the real and predicted of each point.
