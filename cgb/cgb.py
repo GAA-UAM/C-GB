@@ -1,6 +1,7 @@
 import numbers
 import numpy as np
 from sklearn.tree import _tree
+from scipy.spatial import distance
 from scipy.sparse.csc import csc_matrix
 from scipy.sparse.csr import csr_matrix
 from sklearn.tree import DecisionTreeRegressor
@@ -279,7 +280,6 @@ class ScikitC_GB(BaseGradientBoosting):
             self.estimators_[i, k] = tree
 
         return raw_predictions
-
 
     def _fit_stages(self,
                     X,
@@ -707,6 +707,7 @@ class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
                          n_iter_no_change=n_iter_no_change,
                          tol=tol,
                          ccp_alpha=ccp_alpha)
+        self.metric = metric
 
     def predict(self, X):
         X = check_array(X, dtype=DTYPE, order="C", accept_sparse='csr')
@@ -714,5 +715,11 @@ class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
 
     def score(self, X, y):
         pred = self.predict(X)
-        output_errors = np.average((y - pred)**2, axis=0)
-        return np.sqrt(output_errors)
+        if self.metric == 'RMSE':
+            output_errors = np.average((y - pred)**2, axis=0)
+            err = np.sqrt(output_errors)
+        elif self.metric == 'euclidean':
+            err = np.zeros((y.shape[1],))
+            for i in range(y.shape[1]):
+                err[i] = distance.euclidean(y[:, i], pred[:, i])
+        return err
