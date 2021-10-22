@@ -93,4 +93,10 @@ Print predicted values for each base leaner
   >>> for i, pred_i in enumerate(model.staged_predict(x_test)):
         pred[:, i] = pred_i
 
-  
+score_stage
+------------
+Reurns the `accuracy`` for classification and ``RMSE`` for regression
+  >>> from sklearn.metrics import accuracy_score
+  >>> test_score = np.empty((model.n_estimators))
+  >>> for i in range(model.n_estimators):
+        test_score[i] = accuracy_score(y, pred_cgb[:, i])
