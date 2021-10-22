@@ -95,7 +95,8 @@ Print predicted values for each base leaner
 
 score_stage
 ------------
-Reurns the `accuracy`` for classification and ``RMSE`` for regression
+Use the `staged_predict` to return the score for stages
+
   >>> from sklearn.metrics import accuracy_score
   >>> test_score = np.empty((model.n_estimators))
   >>> for i in range(model.n_estimators):
