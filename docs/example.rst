@@ -81,7 +81,7 @@ Print predicted values of the trained model.
 
   >>> model.predict(x_test)
   
-Returns `np.array(N-features, n_classes/outputs)`
+Returns ``np.array(N-features, n_classes/outputs)``
 
 
 staged_predict
