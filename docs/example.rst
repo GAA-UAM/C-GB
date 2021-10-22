@@ -81,10 +81,11 @@ Print predicted values of the trained model.
 
   >>> model.predict(x_test)
   
-Returns np.array(N-features, n_classes/outputs)
+Returns `np.array(N-features, n_classes/outputs)`
 
 
-
+staged_predict
+-------------
 Print predicted values for each base leaner
   
   >>> pred = np.zeros((y_test.shape[0], model.n_estimators))
