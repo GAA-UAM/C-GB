@@ -87,7 +87,7 @@ Returns np.array(N-features, n_classes/outputs)
 
 Print predicted values for each base leaner
   
-  >>> pred = np.zeros((y_test.shape[0], 100))
+  >>> pred = np.zeros((y_test.shape[0], model.n_estimators))
 
 
   >>> for i, pred_i in enumerate(model.staged_predict(x_test)):
