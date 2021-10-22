@@ -22,7 +22,7 @@ You may fit the model for a dataset with n>2 class labels. Although it works per
 Split the data. Here to show the instruction of the model we consider a simple split. We suggest choosing the proper splitting method with regard to your dataset.
 
   >>> x_train, x_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.3, random_state=1)
+    X, y, test_size=0.2, random_state=1)
 
       
 import `C_GradientBoostingClassifier` from the ``cgb``. For classification, you should use ``deviance`` as the loss function. You may leave other hyperparameters with default values.
@@ -88,8 +88,6 @@ Returns np.array(N-features, n_classes/outputs)
 Print predicted values for each base leaner
   
   >>> pred = np.zeros((y_test.shape[0], model.n_estimators))
-
-
   >>> for i, pred_i in enumerate(model.staged_predict(x_test)):
         pred[:, i] = pred_i
 
