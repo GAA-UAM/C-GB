@@ -281,6 +281,7 @@ class ScikitC_GB(BaseGradientBoosting):
 
         return raw_predictions
 
+
     def _fit_stages(self,
                     X,
                     y,
@@ -683,7 +684,8 @@ class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
                  validation_fraction=0.1,
                  n_iter_no_change=None,
                  tol=1e-4,
-                 ccp_alpha=0.0):
+                 ccp_alpha=0.0,
+                 metric='RMSE'):
 
         super().__init__(loss=loss,
                          learning_rate=learning_rate,
@@ -723,3 +725,4 @@ class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
             for i in range(y.shape[1]):
                 err[i] = distance.euclidean(y[:, i], pred[:, i])
         return err
+        
