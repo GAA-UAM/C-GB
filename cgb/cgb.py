@@ -721,6 +721,6 @@ class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
             output_errors = np.average((y - pred)**2, axis=0)
             err = np.sqrt(output_errors)
         elif self.metric == 'euclidean':
-            err = 'Under construction'
+            err = np.mean(np.sqrt(np.power(y - pred, 2).sum(axis=1)))
         return err
         
