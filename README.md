@@ -124,7 +124,7 @@ References:
       - "multi-output regression"
       - "multiclass-classification"
 ```
-## How to cite GBNN
+## How to cite C-GB
 If you are using this package in your paper, please cite our work as follows
 ## Keywords
 `Gradient Boosting`, `multi-output regression`, `multiclass-classification regression`
@@ -142,7 +142,7 @@ In the following, you will find the different approaches to contribute;
     <li> Contribute to producing different experiments. </li>
 </ul>
 
-## Key members of GBNN
+## Key members of C-GB
 * [Gonzalo Martínez-Muñoz](https://github.com/gmarmu)
 * [Seyedsaman Emami](https://github.com/samanemami)
 
