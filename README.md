@@ -137,9 +137,10 @@ In the following, you will find the different approaches to contribute;
 * [Seyedsaman Emami](https://github.com/samanemami)
 
 # Version
-0.0.1
+0.0.2
 
 ## Updated
+16.Jan.2022
 
 ## Date-released
 01.Oct.2021
