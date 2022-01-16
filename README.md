@@ -36,26 +36,29 @@ import sklearn.datasets as dts
 from sklearn.model_selection import train_test_split
 
 X, y = dts.make_classification(
-    n_samples=100, n_classes=3, n_clusters_per_class=2,
+    n_samples=2000, n_classes=3, n_clusters_per_class=2,
     random_state=1, n_informative=4)
 
 x_train, x_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=1)
 
-model = C_GradientBoostingClassifier(max_depth=5,
+odel = C_GradientBoostingClassifier(max_depth=20,
                                      subsample=1,
                                      max_features='sqrt',
                                      learning_rate=0.1,
                                      random_state=1,
-                                     criterion="mse",
-                                     loss="deviance",
+                                     criterion="squared_error",
                                      n_estimators=100)
 model.fit(x_train, y_train)
-model.score(x_test, y_test)
+print(model.score(x_test, y_test))
+confusion_matrix(y_test, model.predict(x_test))
 ```
 ```output
 Return the mean accuracy regarding the n_classes.
->>> 70%
+>>> 79.67%
+array([[151,  16,  24],
+       [ 14, 166,  23],
+       [ 29,  16, 161]], dtype=int64)
 ```
 
 <hr>
