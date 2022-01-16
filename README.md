@@ -66,10 +66,17 @@ import cgb
 import sklearn.datasets as dts
 from sklearn.model_selection import train_test_split
 
-X, y = dts.make_regression(n_samples=100, n_features=100, n_targets=3)
+seed = 1
 
-x_train, x_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.3, random_state=1)
+X, y = dts.make_regression(n_samples=100,
+                           n_features=100,
+                           n_targets=3,
+                           random_state=seed)
+                           
+                           
+x_train, x_test, y_train, y_test = train_test_split(X, y,
+                                                    test_size=0.3, 
+                                                    random_state=seed)
 
 
 model = C_GradientBoostingRegressor(learning_rate=0.1,
@@ -77,7 +84,7 @@ model = C_GradientBoostingRegressor(learning_rate=0.1,
                                     max_features="sqrt",
                                     n_estimators=100,
                                     max_depth=3,
-                                    random_state=1)
+                                    random_state=seed)
 
 model.fit(x_train, y_train)
 model.predict(x_test)
@@ -85,7 +92,7 @@ model.score(x_test, y_test)
 ```
 ```output
 Return the RMSE for n_outputs
->>> array([170.82297721, 133.84200063, 150.02456502])
+>>> array([164.36658903, 101.0311495 , 166.13994623])
 ```
 
 # Requirements
