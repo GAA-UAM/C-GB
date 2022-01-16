@@ -173,7 +173,7 @@ class ScikitC_GB(BaseGradientBoosting):
                  n_estimators=100,
                  learning_rate=0.1,
                  loss="deviance",
-                 criterion="mse",
+                 criterion="squared_error",
                  min_samples_split=2,
                  min_samples_leaf=1,
                  min_weight_fraction_leaf=0.0,
@@ -181,7 +181,6 @@ class ScikitC_GB(BaseGradientBoosting):
                  max_features=None,
                  max_depth=5,
                  min_impurity_decrease=0.0,
-                 min_impurity_split=None,
                  ccp_alpha=0.0,
                  alpha=0.9,
                  verbose=0,
@@ -204,7 +203,6 @@ class ScikitC_GB(BaseGradientBoosting):
                          max_features=max_features,
                          max_depth=max_depth,
                          min_impurity_decrease=min_impurity_decrease,
-                         min_impurity_split=min_impurity_split,
                          ccp_alpha=ccp_alpha,
                          alpha=alpha,
                          verbose=verbose,
@@ -251,7 +249,6 @@ class ScikitC_GB(BaseGradientBoosting):
                 min_samples_leaf=self.min_samples_leaf,
                 min_weight_fraction_leaf=self.min_weight_fraction_leaf,
                 min_impurity_decrease=self.min_impurity_decrease,
-                min_impurity_split=self.min_impurity_split,
                 max_features=self.max_features,
                 max_leaf_nodes=self.max_leaf_nodes,
                 random_state=random_state,
@@ -280,7 +277,6 @@ class ScikitC_GB(BaseGradientBoosting):
             self.estimators_[i, k] = tree
 
         return raw_predictions
-
 
     def _fit_stages(self,
                     X,
@@ -427,25 +423,25 @@ class ScikitC_GB(BaseGradientBoosting):
         if isinstance(self.max_features, str):
             if self.max_features == "auto":
                 if is_classifier(self):
-                    max_features = max(1, int(np.sqrt(self.n_features_)))
+                    max_features = max(1, int(np.sqrt(self.n_features_in_)))
                 else:
-                    max_features = self.n_features_
+                    max_features = self.n_features_in_
             elif self.max_features == "sqrt":
-                max_features = max(1, int(np.sqrt(self.n_features_)))
+                max_features = max(1, int(np.sqrt(self.n_features_in_)))
             elif self.max_features == "log2":
-                max_features = max(1, int(np.log2(self.n_features_)))
+                max_features = max(1, int(np.log2(self.n_features_in_)))
             else:
                 raise ValueError("Invalid value for max_features: %r. "
                                  "Allowed string values are 'auto', 'sqrt' "
                                  "or 'log2'." % self.max_features)
         elif self.max_features is None:
-            max_features = self.n_features_
+            max_features = self.n_features_in_
         elif isinstance(self.max_features, numbers.Integral):
             max_features = self.max_features
         else:  # float
-            if 0. < self.max_features <= 1.:
-                max_features = max(int(self.max_features * self.n_features_),
-                                   1)
+            if 0.0 < self.max_features <= 1.0:
+                max_features = max(
+                    int(self.max_features * self.n_features_in_), 1)
             else:
                 raise ValueError("max_features must be in (0, n_features]")
 
@@ -458,11 +454,6 @@ class ScikitC_GB(BaseGradientBoosting):
 
     def fit(self, X, y, sample_weight=None, monitor=None):
 
-        if is_classifier(self):
-            if self.criterion == 'mae':
-                # TODO: This should raise an error from 1.1
-                self._warn_mae_for_criterion()
-
         if not self.warm_start:
             self._clear_state()
 
@@ -471,7 +462,6 @@ class ScikitC_GB(BaseGradientBoosting):
                                    accept_sparse=['csr', 'csc', 'coo'],
                                    dtype=DTYPE,
                                    multi_output=True)
-        n_samples, self.n_features_ = X.shape
 
         sample_weight_is_none = sample_weight is None
 
@@ -568,9 +558,6 @@ class ScikitC_GB(BaseGradientBoosting):
         """Check input and compute raw predictions of the init estimator."""
         self._check_initialized()
         X = self.estimators_[0, 0]._validate_X_predict(X, check_input=True)
-        if X.shape[1] != self.n_features_:
-            raise ValueError("X.shape[1] should be {0:d}, not {1:d}.".format(
-                self.n_features_, X.shape[1]))
         if self.init_ == 'zero':
             raw_predictions = np.zeros(shape=(X.shape[0], self.loss_.K),
                                        dtype=np.float64)
@@ -607,13 +594,12 @@ class C_GradientBoostingClassifier(GradientBoostingClassifier, ScikitC_GB):
                  learning_rate=0.1,
                  n_estimators=100,
                  subsample=1.0,
-                 criterion='friedman_mse',
+                 criterion='squared_error',
                  min_samples_split=2,
                  min_samples_leaf=1,
                  min_weight_fraction_leaf=0.,
                  max_depth=3,
                  min_impurity_decrease=0.,
-                 min_impurity_split=None,
                  init=None,
                  random_state=None,
                  max_features=None,
@@ -640,7 +626,6 @@ class C_GradientBoostingClassifier(GradientBoostingClassifier, ScikitC_GB):
                          verbose=verbose,
                          max_leaf_nodes=max_leaf_nodes,
                          min_impurity_decrease=min_impurity_decrease,
-                         min_impurity_split=min_impurity_split,
                          warm_start=warm_start,
                          validation_fraction=validation_fraction,
                          n_iter_no_change=n_iter_no_change,
@@ -667,13 +652,12 @@ class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
                  learning_rate=0.1,
                  n_estimators=100,
                  subsample=1.0,
-                 criterion='friedman_mse',
+                 criterion='squared_error',
                  min_samples_split=2,
                  min_samples_leaf=1,
                  min_weight_fraction_leaf=0.,
                  max_depth=3,
                  min_impurity_decrease=0.,
-                 min_impurity_split=None,
                  init=None,
                  random_state=None,
                  max_features=None,
@@ -699,7 +683,6 @@ class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
                          subsample=subsample,
                          max_features=max_features,
                          min_impurity_decrease=min_impurity_decrease,
-                         min_impurity_split=min_impurity_split,
                          random_state=random_state,
                          verbose=verbose,
                          alpha=alpha,
@@ -723,4 +706,3 @@ class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
         elif self.metric == 'euclidean':
             err = np.mean(np.sqrt(np.power(y - pred, 2).sum(axis=1)))
         return err
-        
