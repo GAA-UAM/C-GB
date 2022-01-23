@@ -1,3 +1,6 @@
+# Condensed Gradient Boosting Decision Tree
+
+
 ![![regression](https://github.com/samanemami/C_GB-EX/blob/main/docs/Regression.png)](https://github.com/samanemami/C_GB-EX/blob/main/docs/Regression.png)
 
 # C-GB
