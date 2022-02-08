@@ -2,6 +2,8 @@
 
 
 ![![regression](https://github.com/samanemami/C_GB-EX/blob/main/docs/Regression.png)](https://github.com/samanemami/C_GB-EX/blob/main/docs/Regression.png)
+![![Tree](https://github.com/samanemami/C_GB-EX/blob/main/docs/C_GB_Tree.jpg)](https://github.com/samanemami/C_GB-EX/blob/main/docs/C_GB_Tree.jpg)
+
 
 # C-GB
 Condensed Gradient Boosting Decision Tree
