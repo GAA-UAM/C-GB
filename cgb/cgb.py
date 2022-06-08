@@ -17,6 +17,7 @@ from sklearn.base import BaseEstimator, is_classifier
 from sklearn.model_selection._split import train_test_split
 from sklearn.ensemble._gradient_boosting import predict_stages
 from sklearn.utils.validation import check_array, check_random_state, column_or_1d, _check_sample_weight
+from sklearn.utils import check_scalar
 
 TREE_LEAF = _tree.TREE_LEAF
 DTYPE = _tree.DTYPE
@@ -110,7 +111,7 @@ class CondensedMultinomialDeviance(_gb_losses.ClassificationLossFunction):
         return raw_predictions
 
 
-class MultiOutoutLeastSquaresError(_gb_losses.RegressionLossFunction):
+class MultiOutputtLeastSquaresError(_gb_losses.RegressionLossFunction):
     def init_estimator(self):
         return DummyRegressor(strategy='mean')
 
@@ -172,7 +173,7 @@ class ScikitC_GB(BaseGradientBoosting):
     def __init__(self,
                  n_estimators=100,
                  learning_rate=0.1,
-                 loss="deviance",
+                 loss="log_loss",
                  criterion="squared_error",
                  min_samples_split=2,
                  min_samples_leaf=1,
@@ -226,7 +227,7 @@ class ScikitC_GB(BaseGradientBoosting):
                    X_csr=None):
 
         assert sample_mask.dtype == np.bool
-        loss = self.loss_
+        loss = self._loss
 
         original_y = y
 
@@ -299,7 +300,7 @@ class ScikitC_GB(BaseGradientBoosting):
         do_oob = self.subsample < 1.0
         sample_mask = np.ones((n_samples, ), dtype=np.bool)
         n_inbag = max(1, int(self.subsample * n_samples))
-        loss_ = self.loss_
+        loss_ = self._loss
 
         if self.verbose:
             verbose_reporter = VerboseReporter(verbose=self.verbose)
@@ -342,7 +343,7 @@ class ScikitC_GB(BaseGradientBoosting):
                                               sample_weight, sample_mask,
                                               random_state, X_csc, X_csr)
 
-            # track deviance (= loss)
+            # track loss
             if do_oob:
                 self.train_score_[i] = loss_(y[sample_mask],
                                              raw_predictions[sample_mask],
@@ -382,26 +383,37 @@ class ScikitC_GB(BaseGradientBoosting):
 
     def _check_params(self):
         """Check validity of parameters and raise ValueError if not valid."""
-        if self.n_estimators <= 0:
-            raise ValueError("n_estimators must be greater than 0 but "
-                             "was %r" % self.n_estimators)
+        check_scalar(
+            self.learning_rate,
+            name="learning_rate",
+            target_type=numbers.Real,
+            min_val=0.0,
+            include_boundaries="neither",
+        )
+
+        check_scalar(
+            self.n_estimators,
+            name="n_estimators",
+            target_type=numbers.Integral,
+            min_val=1,
+            include_boundaries="left",
+        )
 
         if (self.loss not in self._SUPPORTED_LOSS
                 or self.loss not in _gb_losses.LOSS_FUNCTIONS):
             raise ValueError("Loss '{0:s}' not supported. ".format(self.loss))
         """This loss function allows considering both binary and multi-class classification."""
-        if self.loss == 'deviance':
+        if self.loss == 'log_loss':
             loss_class = CondensedMultinomialDeviance
-
         else:
-            loss_class = MultiOutoutLeastSquaresError
+            loss_class = MultiOutputtLeastSquaresError
 
-        if self.loss == 'deviance':
-            self.loss_ = loss_class(self.n_classes_)
+        if self.loss == 'log_loss':
+            self._loss = loss_class(self.n_classes_)
         elif self.loss in ("huber", "quantile"):
-            self.loss_ = loss_class(self.alpha)
+            self._loss = loss_class(self.alpha)
         else:
-            self.loss_ = loss_class()
+            self._loss = loss_class()
 
         if not (0.0 < self.subsample <= 1.0):
             raise ValueError("subsample must be in (0,1] but "
@@ -410,7 +422,7 @@ class ScikitC_GB(BaseGradientBoosting):
         if self.init is not None:
             # init must be an estimator or 'zero'
             if isinstance(self.init, BaseEstimator):
-                self.loss_.check_init_estimator(self.init)
+                self._loss.check_init_estimator(self.init)
             elif not (isinstance(self.init, str) and self.init == 'zero'):
                 raise ValueError(
                     "The init parameter must be an estimator or 'zero'. "
@@ -498,7 +510,7 @@ class ScikitC_GB(BaseGradientBoosting):
             self._init_state()
 
             if self.init_ == 'zero':
-                raw_predictions = np.zeros(shape=(X.shape[0], self.loss_.K),
+                raw_predictions = np.zeros(shape=(X.shape[0], self._loss.K),
                                            dtype=np.float64)
             else:
                 if sample_weight_is_none:
@@ -519,7 +531,7 @@ class ScikitC_GB(BaseGradientBoosting):
                             raise
 
                 raw_predictions = \
-                    self.loss_.get_init_raw_predictions(X, self.init_)
+                    self._loss.get_init_raw_predictions(X, self.init_)
 
             begin_at_stage = 0
 
@@ -559,10 +571,10 @@ class ScikitC_GB(BaseGradientBoosting):
         self._check_initialized()
         X = self.estimators_[0, 0]._validate_X_predict(X, check_input=True)
         if self.init_ == 'zero':
-            raw_predictions = np.zeros(shape=(X.shape[0], self.loss_.K),
+            raw_predictions = np.zeros(shape=(X.shape[0], self._loss.K),
                                        dtype=np.float64)
         else:
-            raw_predictions = self.loss_.get_init_raw_predictions(
+            raw_predictions = self._loss.get_init_raw_predictions(
                 X, self.init_).astype(np.float64)
         return raw_predictions
 
@@ -590,7 +602,7 @@ class ScikitC_GB(BaseGradientBoosting):
 class C_GradientBoostingClassifier(GradientBoostingClassifier, ScikitC_GB):
     def __init__(self,
                  *,
-                 loss='deviance',
+                 loss='log_loss',
                  learning_rate=0.1,
                  n_estimators=100,
                  subsample=1.0,
@@ -635,13 +647,13 @@ class C_GradientBoostingClassifier(GradientBoostingClassifier, ScikitC_GB):
     def predict(self, X):
         raw_predictions = self.decision_function(X)
         encoded_labels = \
-            self.loss_._raw_prediction_to_decision(raw_predictions)
+            self._loss._raw_prediction_to_decision(raw_predictions)
         return self.classes_.take(encoded_labels, axis=0)
 
     def staged_predict(self, X):
         for raw_predictions in self._staged_raw_predict(X):
             encoded_labels = \
-                self.loss_._raw_prediction_to_decision(raw_predictions)
+                self._loss._raw_prediction_to_decision(raw_predictions)
             yield self.classes_.take(encoded_labels, axis=0)
 
 
