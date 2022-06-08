@@ -1,7 +1,6 @@
 import numbers
 import numpy as np
 from sklearn.tree import _tree
-from scipy.spatial import distance
 from scipy.sparse.csc import csc_matrix
 from scipy.sparse.csr import csr_matrix
 from sklearn.tree import DecisionTreeRegressor
@@ -14,6 +13,7 @@ from scipy.special import logsumexp
 from scipy.sparse.base import issparse
 from sklearn.utils.multiclass import type_of_target
 from sklearn.base import BaseEstimator, is_classifier
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection._split import train_test_split
 from sklearn.ensemble._gradient_boosting import predict_stages
 from sklearn.utils.validation import check_array, check_random_state, column_or_1d, _check_sample_weight
@@ -23,7 +23,7 @@ TREE_LEAF = _tree.TREE_LEAF
 DTYPE = _tree.DTYPE
 
 
-class CondensedMultinomialDeviance(_gb_losses.ClassificationLossFunction):
+class CondensedDeviance(_gb_losses.ClassificationLossFunction):
     def __init__(self, n_classes_):
         self.K = 1
         self.n_classes_ = n_classes_
@@ -111,7 +111,7 @@ class CondensedMultinomialDeviance(_gb_losses.ClassificationLossFunction):
         return raw_predictions
 
 
-class MultiOutputtLeastSquaresError(_gb_losses.RegressionLossFunction):
+class MultiOutputLeastSquaresError(_gb_losses.RegressionLossFunction):
     def init_estimator(self):
         return DummyRegressor(strategy='mean')
 
@@ -399,14 +399,16 @@ class ScikitC_GB(BaseGradientBoosting):
             include_boundaries="left",
         )
 
-        if (self.loss not in self._SUPPORTED_LOSS
-                or self.loss not in _gb_losses.LOSS_FUNCTIONS):
-            raise ValueError("Loss '{0:s}' not supported. ".format(self.loss))
-        """This loss function allows considering both binary and multi-class classification."""
+        if (
+            self.loss not in self._SUPPORTED_LOSS
+            or self.loss not in _gb_losses.LOSS_FUNCTIONS
+        ):
+            raise ValueError(f"Loss {self.loss!r} not supported. ")
+
         if self.loss == 'log_loss':
-            loss_class = CondensedMultinomialDeviance
+            loss_class = CondensedDeviance
         else:
-            loss_class = MultiOutputtLeastSquaresError
+            loss_class = MultiOutputLeastSquaresError
 
         if self.loss == 'log_loss':
             self._loss = loss_class(self.n_classes_)
@@ -415,22 +417,33 @@ class ScikitC_GB(BaseGradientBoosting):
         else:
             self._loss = loss_class()
 
-        if not (0.0 < self.subsample <= 1.0):
-            raise ValueError("subsample must be in (0,1] but "
-                             "was %r" % self.subsample)
+        check_scalar(
+            self.subsample,
+            name="subsample",
+            target_type=numbers.Real,
+            min_val=0.0,
+            max_val=1.0,
+            include_boundaries="right",
+        )
 
         if self.init is not None:
             # init must be an estimator or 'zero'
             if isinstance(self.init, BaseEstimator):
                 self._loss.check_init_estimator(self.init)
-            elif not (isinstance(self.init, str) and self.init == 'zero'):
+            elif not (isinstance(self.init, str) and self.init == "zero"):
                 raise ValueError(
                     "The init parameter must be an estimator or 'zero'. "
-                    "Got init={}".format(self.init))
+                    f"Got init={self.init!r}"
+                )
 
-        if not (0.0 < self.alpha < 1.0):
-            raise ValueError("alpha must be in (0.0, 1.0) but "
-                             "was %r" % self.alpha)
+        check_scalar(
+            self.alpha,
+            name="alpha",
+            target_type=numbers.Real,
+            min_val=0.0,
+            max_val=1.0,
+            include_boundaries="neither",
+        )
 
         if isinstance(self.max_features, str):
             if self.max_features == "auto":
@@ -443,26 +456,67 @@ class ScikitC_GB(BaseGradientBoosting):
             elif self.max_features == "log2":
                 max_features = max(1, int(np.log2(self.n_features_in_)))
             else:
-                raise ValueError("Invalid value for max_features: %r. "
-                                 "Allowed string values are 'auto', 'sqrt' "
-                                 "or 'log2'." % self.max_features)
+                raise ValueError(
+                    f"Invalid value for max_features: {self.max_features!r}. "
+                    "Allowed string values are 'auto', 'sqrt' or 'log2'."
+                )
+
         elif self.max_features is None:
             max_features = self.n_features_in_
         elif isinstance(self.max_features, numbers.Integral):
+            check_scalar(
+                self.max_features,
+                name="max_features",
+                target_type=numbers.Integral,
+                min_val=1,
+                include_boundaries="left",
+            )
             max_features = self.max_features
         else:  # float
-            if 0.0 < self.max_features <= 1.0:
-                max_features = max(
-                    int(self.max_features * self.n_features_in_), 1)
-            else:
-                raise ValueError("max_features must be in (0, n_features]")
+            check_scalar(
+                self.max_features,
+                name="max_features",
+                target_type=numbers.Real,
+                min_val=0.0,
+                max_val=1.0,
+                include_boundaries="right",
+            )
+            max_features = max(1, int(self.max_features * self.n_features_in_))
 
         self.max_features_ = max_features
 
-        if not isinstance(self.n_iter_no_change,
-                          (numbers.Integral, type(None))):
-            raise ValueError("n_iter_no_change should either be None or an "
-                             "integer. %r was passed" % self.n_iter_no_change)
+        check_scalar(
+            self.verbose,
+            name="verbose",
+            target_type=(numbers.Integral, np.bool_),
+            min_val=0,
+        )
+
+        check_scalar(
+            self.validation_fraction,
+            name="validation_fraction",
+            target_type=numbers.Real,
+            min_val=0.0,
+            max_val=1.0,
+            include_boundaries="neither",
+        )
+
+        if self.n_iter_no_change is not None:
+            check_scalar(
+                self.n_iter_no_change,
+                name="n_iter_no_change",
+                target_type=numbers.Integral,
+                min_val=1,
+                include_boundaries="left",
+            )
+
+        check_scalar(
+            self.tol,
+            name="tol",
+            target_type=numbers.Real,
+            min_val=0.0,
+            include_boundaries="neither",
+        )
 
     def fit(self, X, y, sample_weight=None, monitor=None):
 
@@ -658,6 +712,7 @@ class C_GradientBoostingClassifier(GradientBoostingClassifier, ScikitC_GB):
 
 
 class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
+
     def __init__(self,
                  *,
                  loss='ls',
@@ -713,8 +768,8 @@ class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
     def score(self, X, y):
         pred = self.predict(X)
         if self.metric == 'RMSE':
-            output_errors = np.average((y - pred)**2, axis=0)
-            err = np.sqrt(output_errors)
-        elif self.metric == 'euclidean':
-            err = np.mean(np.sqrt(np.power(y - pred, 2).sum(axis=1)))
+            err = mean_squared_error(y_true=y, y_pred=pred,
+                                     squared=False, multioutput='raw_values')
+        else:
+            err = r2_score(y_true=y, y_pred=pred)
         return err
