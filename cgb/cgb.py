@@ -169,7 +169,8 @@ class MultiOutputLeastSquaresError(_gb_losses.RegressionLossFunction):
         pass
 
 
-class ScikitC_GB(BaseGradientBoosting):
+class CondensedGradientBoosting(BaseGradientBoosting):
+
     def __init__(self,
                  n_estimators=100,
                  learning_rate=0.1,
@@ -653,7 +654,8 @@ class ScikitC_GB(BaseGradientBoosting):
             yield raw_predictions.copy()
 
 
-class C_GradientBoostingClassifier(GradientBoostingClassifier, ScikitC_GB):
+class C_GradientBoostingClassifier(GradientBoostingClassifier, CondensedGradientBoosting):
+
     def __init__(self,
                  *,
                  loss='log_loss',
@@ -711,7 +713,7 @@ class C_GradientBoostingClassifier(GradientBoostingClassifier, ScikitC_GB):
             yield self.classes_.take(encoded_labels, axis=0)
 
 
-class C_GradientBoostingRegressor(GradientBoostingRegressor, ScikitC_GB):
+class C_GradientBoostingRegressor(GradientBoostingRegressor, CondensedGradientBoosting):
 
     def __init__(self,
                  *,
