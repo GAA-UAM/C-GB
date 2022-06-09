@@ -1,2 +1,2 @@
+__all__=["ensemble"]
 
-__all__=['cgb']
