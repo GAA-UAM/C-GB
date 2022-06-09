@@ -738,7 +738,7 @@ class cgb_reg(GradientBoostingRegressor, CondensedGradientBoosting):
                  n_iter_no_change=None,
                  tol=1e-4,
                  ccp_alpha=0.0,
-                 metric='RMSE'):
+                 metric='rmse'):
 
         super().__init__(loss=loss,
                          learning_rate=learning_rate,
@@ -769,7 +769,7 @@ class cgb_reg(GradientBoostingRegressor, CondensedGradientBoosting):
 
     def score(self, X, y):
         pred = self.predict(X)
-        if self.metric == 'RMSE':
+        if self.metric == 'rmse':
             err = mean_squared_error(y_true=y, y_pred=pred,
                                      squared=False, multioutput='raw_values')
         else:

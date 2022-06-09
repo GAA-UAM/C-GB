@@ -25,21 +25,21 @@ Base model
         - ``None`` >> n_features
 
 
-C_GradientBoostingClassifier
+cgb_clf
 -----
 
-  - ``loss``: {`deviance`, `ls`}, default = **deviance**
+  - ``loss``: {`log_loss`, `ls`}, default = **log_loss**
   
     - The loss function for optimization. For the Multi-class/Binary classification, it should be ``deviance``.
 
 
 
-C_GradientBoostingRegressor
+cgb_reg
 -----
-  - ``loss``: {`deviance`, `ls`}, default = **ls**
+  - ``loss``: {`log_loss`, `ls`}, default = **ls**
   
     - The loss function for optimization. For the regression it should set to ``ls``.
 
-  - ``metric`` : {`RMSE`, ``euclidean``}, default = **RMSE**
+  - ``metric`` : {`rmse`, `r2_score`}, default = **rmse**
 
-    - It returns the error of the model. ``RMSE`` will return the average error on the euclidean space, where ``euclidean`` returns the distance between the real and predicted of each point.
+    - It returns the error of the model. ``rmse`` will return the average R2 score.
