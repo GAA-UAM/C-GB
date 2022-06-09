@@ -1,3 +1,10 @@
+""" Condensed Gradient Boosting Decision Tree """
+
+# Author: Seyedsaman Emami 
+# Author: Gonzalo Martínez-Muñoz 
+
+# Licence: GNU Lesser General Public License v2.1 (LGPL-2.1)
+
 import numbers
 import numpy as np
 from sklearn.tree import _tree
