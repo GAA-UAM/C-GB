@@ -1,3 +1,3 @@
-from .cgb import C_GradientBoostingClassifier, C_GradientBoostingRegressor
+from .cgb import cgb_clf, cgb_reg
 
-__all__ = ["C_GradientBoostingClassifier", "C_GradientBoostingRegressor"]
+__all__ = ["cgb_clf", "cgb_reg"]

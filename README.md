@@ -20,9 +20,10 @@ Gradient Boosting Machine is a machine learning model for classification and reg
 
 
 # Installation
-Clone this project then, install the Python package using pip:
+inbuilt Python package management system, pip. You can can install, update, or delete the cgb.
 
-`pip install .`
+
+`pip install cgb`
 
 
 # Usage
@@ -36,7 +37,7 @@ In the following, the implementation of the algorithm for two problems (classifi
 
 ### Classification
 ```Python
-import cgb
+from cgb import cgb_clf
 import sklearn.datasets as dts
 from sklearn.model_selection import train_test_split
 
@@ -47,17 +48,20 @@ X, y = dts.make_classification(
 x_train, x_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=1)
 
-odel = C_GradientBoostingClassifier(max_depth=20,
-                                     subsample=1,
-                                     max_features='sqrt',
-                                     learning_rate=0.1,
-                                     random_state=1,
-                                     criterion="squared_error",
-                                     n_estimators=100)
+model = cgb_clf(max_depth=20,
+                subsample=1,
+                loss='log_loss',
+                max_features='sqrt',
+                learning_rate=0.1,
+                random_state=1,
+                criterion="squared_error",
+                n_estimators=100)
+
 model.fit(x_train, y_train)
 print(model.score(x_test, y_test))
 confusion_matrix(y_test, model.predict(x_test))
 ```
+
 ```output
 Return the mean accuracy regarding the n_classes.
 >>> 79.67%
@@ -70,7 +74,7 @@ array([[151,  16,  24],
 
 ### Regression/ Multi-label classification
 ```Python
-import cgb
+from cgb import cgb_reg
 import sklearn.datasets as dts
 from sklearn.model_selection import train_test_split
 
@@ -87,17 +91,19 @@ x_train, x_test, y_train, y_test = train_test_split(X, y,
                                                     random_state=seed)
 
 
-model = C_GradientBoostingRegressor(learning_rate=0.1,
-                                    subsample=1,
-                                    max_features="sqrt",
-                                    n_estimators=100,
-                                    max_depth=3,
-                                    random_state=seed)
+model = cgb_reg(learning_rate=0.1,
+                subsample=1,
+                loss='ls',
+                max_features="sqrt",
+                n_estimators=100,
+                max_depth=3,
+                random_state=seed)
 
 model.fit(x_train, y_train)
 model.predict(x_test)
 model.score(x_test, y_test)
 ```
+
 ```output
 Return the RMSE for n_outputs
 >>> array([164.36658903, 101.0311495 , 166.13994623])
@@ -152,10 +158,10 @@ In the following, you will find the different approaches to contribute;
 * [Seyedsaman Emami](https://github.com/samanemami)
 
 # Version
-0.0.2
+0.0.3
 
 ## Updated
-16.Jan.2022
+08.Jun.2022
 
 ## Date-released
 01.Oct.2021

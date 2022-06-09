@@ -654,7 +654,7 @@ class CondensedGradientBoosting(BaseGradientBoosting):
             yield raw_predictions.copy()
 
 
-class C_GradientBoostingClassifier(GradientBoostingClassifier, CondensedGradientBoosting):
+class cgb_clf(GradientBoostingClassifier, CondensedGradientBoosting):
 
     def __init__(self,
                  *,
@@ -713,7 +713,7 @@ class C_GradientBoostingClassifier(GradientBoostingClassifier, CondensedGradient
             yield self.classes_.take(encoded_labels, axis=0)
 
 
-class C_GradientBoostingRegressor(GradientBoostingRegressor, CondensedGradientBoosting):
+class cgb_reg(GradientBoostingRegressor, CondensedGradientBoosting):
 
     def __init__(self,
                  *,

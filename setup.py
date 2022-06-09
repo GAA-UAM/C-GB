@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="cgb",
-    version="0.0.1",
+    version="0.0.3",
     author="Seyedsaman Emami, Gonzalo Martínez-Muñoz",
     author_email="emami.seyedsaman@uam.es, gonzalo.martinez@uam.es",
     description="Condensed Gradient Boosting Decision Tree",
