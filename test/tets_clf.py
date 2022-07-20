@@ -5,7 +5,6 @@ import warnings
 
 warnings.simplefilter("ignore")
 
-
 def model(clf=True):
 
     if clf:
