@@ -1,10 +1,7 @@
-# Condensed Gradient Boosting Decision Tree
-
-
-![![regression](https://github.com/samanemami/C_GB-EX/blob/main/docs/Regression.png)](https://github.com/samanemami/C_GB-EX/blob/main/docs/Regression.png)
+# Condensed-Gradient Boosting 
 
 # C-GB
-Condensed Gradient Boosting Decision Tree
+Condensed-Gradient Boosting
 
 # Table of contents
 * [Introduction](#Introduction)
@@ -110,13 +107,13 @@ Return the RMSE for n_outputs
 ```
 
 # Requirements
-This package uses the following libraries, which we already defined the dependencies:
+This package uses the following libraries, which we already defined the dependencies;
 
 <ul>
-  <li>numpy - Numerical Python</li>
-  <li>scikit-learn - Machine learning in Python</li>
   <li>scipy</li>
   <li>numbers</li>
+  <li>numpy - Numerical Python</li>
+  <li>scikit-learn - Machine learning in Python</li>
 </ul>
 
 # Citation
@@ -136,7 +133,10 @@ References:
       - "multiclass-classification"
 ```
 ## How to cite C-GB
-If you are using this package in your paper, please cite our work as follows
+If you are using this package in your paper, please cite our work as follows;
+
+
+
 ## Keywords
 `Gradient Boosting`, `multi-output regression`, `multiclass-classification regression`
 
@@ -147,12 +147,13 @@ The authors and developers involved in this package can be found in the [contrib
 
 In the following, you will find the different approaches to contribute;
 <ul>
-    <li> Write posts on the blog, Linkedin, your websites about C-GB. </li>
     <li> Code reviews. </li>
     <li> Create an issue. </li>
+    <li> GitHub pull request </li>
     <li> Contribute to producing different experiments. </li>
+    <li> Write posts on the blog, Linkedin, your websites about `C-GB`. </li>
 </ul>
-
+ 
 ## Key members of C-GB
 * [Gonzalo Martínez-Muñoz](https://github.com/gmarmu)
 * [Seyedsaman Emami](https://github.com/samanemami)
