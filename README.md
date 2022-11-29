@@ -135,6 +135,10 @@ References:
 ## How to cite C-GB
 If you are using this package in your paper, please cite our work as follows;
 
+```yaml
+Emami, Seyedsaman, and Gonzalo Martínez-Muñoz. "Condensed Gradient Boosting." arXiv preprint arXiv:2211.14599 (2022).
+```
+
 
 
 ## Keywords
