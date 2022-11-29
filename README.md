@@ -173,5 +173,6 @@ In the following, you will find the different approaches to contribute;
 
 # Related links
 * Examples, codes to reproduce the results, and additional experiments. Refer [C_GB-EX](https://github.com/samanemami/C_GB-EX).
-* For the condensed model and analysis features, refer to our [paper](#)
+* For the condensed model and analysis features, refer to our [paper](https://arxiv.org/abs/2211.14599)
 * For instructions, please refer to the [documentation](https://github.com/samanemami/C-GB/tree/main/docs).
+
