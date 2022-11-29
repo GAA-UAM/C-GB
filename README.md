@@ -126,7 +126,7 @@ References:
       - Seyedsaman Emami
       - Gonzalo Martínez-Muñoz
     Arxiv:
-      - https://arxiv.org/
+      - https://arxiv.org/pdf/2211.14599.pdf
     Keywords:
       - "Gradient Boosting"
       - "multi-output regression"
