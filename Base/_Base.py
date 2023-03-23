@@ -1,179 +1,28 @@
-""" Condensed Gradient Boosting Decision Tree """
+""" Condensed Gradient Boosting Decision Tree - Base class """
 
-# Author: Seyedsaman Emami 
-# Author: Gonzalo Martínez-Muñoz 
+# Author: Seyedsaman Emami
+# Author: Gonzalo Martínez-Muñoz
 
 # Licence: GNU Lesser General Public License v2.1 (LGPL-2.1)
 
 import numbers
 import numpy as np
-from sklearn.tree import _tree
 from scipy.sparse.csc import csc_matrix
 from scipy.sparse.csr import csr_matrix
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.preprocessing import LabelBinarizer
-from sklearn.dummy import DummyClassifier, DummyRegressor
+from ._Losses import MultiOutputLeastSquaresError, CondensedDeviance
 from sklearn.ensemble._gb import BaseGradientBoosting, VerboseReporter
-from sklearn.ensemble import _gradient_boosting, _gb_losses, GradientBoostingClassifier, GradientBoostingRegressor
+from sklearn.ensemble import _gradient_boosting
 
-from scipy.special import logsumexp
+from sklearn.tree import _tree
 from scipy.sparse.base import issparse
 from sklearn.utils.multiclass import type_of_target
-from sklearn.base import BaseEstimator, is_classifier
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.base import is_classifier
 from sklearn.model_selection._split import train_test_split
-from sklearn.ensemble._gradient_boosting import predict_stages
 from sklearn.utils.validation import check_array, check_random_state, column_or_1d, _check_sample_weight
-from sklearn.utils import check_scalar
 
-TREE_LEAF = _tree.TREE_LEAF
 DTYPE = _tree.DTYPE
-
-
-class CondensedDeviance(_gb_losses.ClassificationLossFunction):
-    def __init__(self, n_classes_):
-        self.K = 1
-        self.n_classes_ = n_classes_
-        self.is_multi_class = False
-
-    def init_estimator(self):
-        return DummyClassifier(strategy="prior")
-
-    def __call__(self, y, raw_predictions, sample_weight=None):
-
-        return np.average(-1 * (y * raw_predictions).sum(axis=1) +
-                          logsumexp(raw_predictions, axis=1),
-                          weights=sample_weight)
-
-    def update_terminal_regions(self,
-                                tree,
-                                X,
-                                y,
-                                residual,
-                                raw_predictions,
-                                sample_weight,
-                                sample_mask,
-                                learning_rate,
-                                k=0):
-
-        terminal_regions = tree.apply(X)
-
-        masked_terminal_regions = terminal_regions.copy()
-        masked_terminal_regions[~sample_mask] = -1
-
-        for leaf in np.where(tree.children_left == TREE_LEAF)[0]:
-            self._update_terminal_region(tree, masked_terminal_regions, leaf,
-                                         X, y, residual, raw_predictions,
-                                         sample_weight)
-
-        raw_predictions[:, :] += \
-            (learning_rate * tree.value[:, :, 0]
-             ).take(terminal_regions, axis=0)
-
-    def negative_gradient(self, y, raw_predictions, k=0, **kwargs):
-
-        return y - np.nan_to_num(
-            np.exp(raw_predictions -
-                   logsumexp(raw_predictions, axis=1, keepdims=True)))
-
-    def _update_terminal_region(
-        self,
-        tree,
-        terminal_regions,
-        leaf,
-        X,
-        y,
-        residual,
-        raw_predictions,
-        sample_weight,
-    ):
-        n_classes = self.n_classes_
-        terminal_region = np.where(terminal_regions == leaf)[0]
-        residual = residual.take(terminal_region, axis=0)
-        y = y.take(terminal_region, axis=0)
-        sample_weight = sample_weight.take(terminal_region, axis=0)
-        sample_weight = sample_weight[:, np.newaxis]
-        numerator = np.sum(sample_weight * residual, axis=0)
-        numerator *= (n_classes - 1) / n_classes
-        denominator = np.sum(sample_weight * (y - residual) *
-                             (1 - y + residual),
-                             axis=0)
-        tree.value[leaf, :, 0] = np.where(
-            abs(denominator) < 1e-150, 0.0, numerator / denominator)
-
-    def _raw_prediction_to_proba(self, raw_predictions):
-        return np.nan_to_num(
-            np.exp(raw_predictions -
-                   (logsumexp(raw_predictions, axis=1)[:, np.newaxis])))
-
-    def _raw_prediction_to_decision(self, raw_predictions):
-        proba = self._raw_prediction_to_proba(raw_predictions)
-        return np.argmax(proba, axis=1)
-
-    def get_init_raw_predictions(self, X, estimator):
-        probas = estimator.predict_proba(X)
-        eps = np.finfo(np.float32).eps
-        probas = np.clip(probas, eps, 1 - eps)
-        raw_predictions = np.log(probas).astype(np.float64)
-        return raw_predictions
-
-
-class MultiOutputLeastSquaresError(_gb_losses.RegressionLossFunction):
-    def init_estimator(self):
-        return DummyRegressor(strategy='mean')
-
-    def get_init_raw_predictions(self, X, estimator):
-        predictions = estimator.predict(X)
-        if type_of_target(predictions) == 'continuous-multioutput' or 'multiclass-multioutput':
-            predictions = predictions.reshape(-1, predictions.shape[1]).astype(
-                np.float64)
-        else:
-            predictions = predictions.reshape(-1, 1).astype(np.float64)
-        return predictions
-
-    def __call__(self, y, raw_predictions, sample_weight=None):
-
-        if sample_weight is None:
-            init = np.mean((y - raw_predictions.ravel())**2)
-        else:
-            if type_of_target(raw_predictions) == 'continuous-multioutput' or 'multiclass-multioutput':
-                init = (1 / sample_weight.sum() *
-                        np.sum(sample_weight[:, None] *
-                               ((y - raw_predictions)**2)))
-            else:
-                init = (1 / sample_weight.sum() *
-                        np.sum(sample_weight *
-                               ((y - raw_predictions.ravel())**2)))
-
-        return init
-
-    def negative_gradient(self, y, raw_predictions, **kargs):
-        if type_of_target(y) == 'continuous-multioutput' or 'multiclass-multioutput':
-            negative_gradient = np.squeeze(y) - raw_predictions
-        else:
-            negative_gradient = np.squeeze(y) - raw_predictions.ravel()
-        return negative_gradient
-
-    def update_terminal_regions(self,
-                                tree,
-                                X,
-                                y,
-                                residual,
-                                raw_predictions,
-                                sample_weight,
-                                sample_mask,
-                                learning_rate=0.1,
-                                k=0):
-        if type_of_target(y) == 'continuous-multioutput' or 'multiclass-multioutput':
-            for i in range(y.shape[1]):
-                raw_predictions[:, i] += learning_rate * \
-                    tree.predict(X)[:, i, 0]
-        else:
-            raw_predictions[:, k] += learning_rate * tree.predict(X).ravel()
-
-    def _update_terminal_region(self, tree, terminal_regions, leaf, X, y,
-                                residual, raw_predictions, sample_weight):
-        pass
 
 
 class CondensedGradientBoosting(BaseGradientBoosting):
@@ -390,68 +239,18 @@ class CondensedGradientBoosting(BaseGradientBoosting):
         return i + 1
 
     def _check_params(self):
-        """Check validity of parameters and raise ValueError if not valid."""
-        check_scalar(
-            self.learning_rate,
-            name="learning_rate",
-            target_type=numbers.Real,
-            min_val=0.0,
-            include_boundaries="neither",
-        )
 
-        check_scalar(
-            self.n_estimators,
-            name="n_estimators",
-            target_type=numbers.Integral,
-            min_val=1,
-            include_boundaries="left",
-        )
-
-        if (
-            self.loss not in self._SUPPORTED_LOSS
-            or self.loss not in _gb_losses.LOSS_FUNCTIONS
-        ):
-            raise ValueError(f"Loss {self.loss!r} not supported. ")
-
-        if self.loss == 'log_loss':
+        if self.loss == "log_loss":
             loss_class = CondensedDeviance
         else:
             loss_class = MultiOutputLeastSquaresError
 
-        if self.loss == 'log_loss':
+        if is_classifier(self):
             self._loss = loss_class(self.n_classes_)
         elif self.loss in ("huber", "quantile"):
             self._loss = loss_class(self.alpha)
         else:
             self._loss = loss_class()
-
-        check_scalar(
-            self.subsample,
-            name="subsample",
-            target_type=numbers.Real,
-            min_val=0.0,
-            max_val=1.0,
-            include_boundaries="right",
-        )
-
-        if self.init is not None:
-            # init must be an estimator or 'zero'
-            if isinstance(self.init, BaseEstimator):
-                self._loss.check_init_estimator(self.init)
-            elif not (isinstance(self.init, str) and self.init == "zero"):
-                raise ValueError(
-                    "The init parameter must be an estimator or 'zero'. "
-                    f"Got init={self.init!r}"
-                )
-
-        check_scalar(
-            self.alpha,
-            name="alpha",
-            target_type=numbers.Real,
-            min_val=0.0,
-            max_val=1.0,
-            include_boundaries="neither",
-        )
 
         if isinstance(self.max_features, str):
             if self.max_features == "auto":
@@ -461,70 +260,16 @@ class CondensedGradientBoosting(BaseGradientBoosting):
                     max_features = self.n_features_in_
             elif self.max_features == "sqrt":
                 max_features = max(1, int(np.sqrt(self.n_features_in_)))
-            elif self.max_features == "log2":
-                max_features = max(1, int(np.log2(self.n_features_in_)))
             else:
-                raise ValueError(
-                    f"Invalid value for max_features: {self.max_features!r}. "
-                    "Allowed string values are 'auto', 'sqrt' or 'log2'."
-                )
-
+                max_features = max(1, int(np.log2(self.n_features_in_)))
         elif self.max_features is None:
             max_features = self.n_features_in_
         elif isinstance(self.max_features, numbers.Integral):
-            check_scalar(
-                self.max_features,
-                name="max_features",
-                target_type=numbers.Integral,
-                min_val=1,
-                include_boundaries="left",
-            )
             max_features = self.max_features
         else:  # float
-            check_scalar(
-                self.max_features,
-                name="max_features",
-                target_type=numbers.Real,
-                min_val=0.0,
-                max_val=1.0,
-                include_boundaries="right",
-            )
             max_features = max(1, int(self.max_features * self.n_features_in_))
 
         self.max_features_ = max_features
-
-        check_scalar(
-            self.verbose,
-            name="verbose",
-            target_type=(numbers.Integral, np.bool_),
-            min_val=0,
-        )
-
-        check_scalar(
-            self.validation_fraction,
-            name="validation_fraction",
-            target_type=numbers.Real,
-            min_val=0.0,
-            max_val=1.0,
-            include_boundaries="neither",
-        )
-
-        if self.n_iter_no_change is not None:
-            check_scalar(
-                self.n_iter_no_change,
-                name="n_iter_no_change",
-                target_type=numbers.Integral,
-                min_val=1,
-                include_boundaries="left",
-            )
-
-        check_scalar(
-            self.tol,
-            name="tol",
-            target_type=numbers.Real,
-            min_val=0.0,
-            include_boundaries="neither",
-        )
 
     def fit(self, X, y, sample_weight=None, monitor=None):
 
@@ -547,28 +292,34 @@ class CondensedGradientBoosting(BaseGradientBoosting):
         else:
             y = self._validate_y(y)
 
+        self._check_params()
+
         if self.n_iter_no_change is not None:
             stratify = y if is_classifier(self) else None
-            X, X_val, y, y_val, sample_weight, sample_weight_val = (
-                train_test_split(X,
-                                 y,
-                                 sample_weight,
-                                 random_state=self.random_state,
-                                 test_size=self.validation_fraction,
-                                 stratify=stratify))
+            X, X_val, y, y_val, sample_weight, sample_weight_val = train_test_split(
+                X,
+                y,
+                sample_weight,
+                random_state=self.random_state,
+                test_size=self.validation_fraction,
+                stratify=stratify,
+            )
             if is_classifier(self):
-                if self.n_classes_ != np.unique(y).shape[0]:
+                if self._n_classes != np.unique(y).shape[0]:
+                    # We choose to error here. The problem is that the init
+                    # estimator would be trained on y, which has some missing
+                    # classes now, so its predictions would not have the
+                    # correct shape.
                     raise ValueError(
-                        'The training data after the early stopping split '
-                        'is missing some classes. Try using another random '
-                        'seed.')
+                        "The training data after the early stopping split "
+                        "is missing some classes. Try using another random "
+                        "seed."
+                    )
         else:
             X_val = y_val = sample_weight_val = None
 
-        self._check_params()
-
         if not self._is_initialized():
-
+            # init state
             self._init_state()
 
             if self.init_ == 'zero':
@@ -659,126 +410,3 @@ class CondensedGradientBoosting(BaseGradientBoosting):
             tree = self.estimators_[i, 0]
             raw_predictions += (self.learning_rate * tree.predict(X))
             yield raw_predictions.copy()
-
-
-class cgb_clf(GradientBoostingClassifier, CondensedGradientBoosting):
-
-    def __init__(self,
-                 *,
-                 loss='log_loss',
-                 learning_rate=0.1,
-                 n_estimators=100,
-                 subsample=1.0,
-                 criterion='squared_error',
-                 min_samples_split=2,
-                 min_samples_leaf=1,
-                 min_weight_fraction_leaf=0.,
-                 max_depth=3,
-                 min_impurity_decrease=0.,
-                 init=None,
-                 random_state=None,
-                 max_features=None,
-                 verbose=0,
-                 max_leaf_nodes=None,
-                 warm_start=False,
-                 validation_fraction=0.1,
-                 n_iter_no_change=None,
-                 tol=1e-4,
-                 ccp_alpha=0.0):
-
-        super().__init__(loss=loss,
-                         learning_rate=learning_rate,
-                         n_estimators=n_estimators,
-                         criterion=criterion,
-                         min_samples_split=min_samples_split,
-                         min_samples_leaf=min_samples_leaf,
-                         min_weight_fraction_leaf=min_weight_fraction_leaf,
-                         max_depth=max_depth,
-                         init=init,
-                         subsample=subsample,
-                         max_features=max_features,
-                         random_state=random_state,
-                         verbose=verbose,
-                         max_leaf_nodes=max_leaf_nodes,
-                         min_impurity_decrease=min_impurity_decrease,
-                         warm_start=warm_start,
-                         validation_fraction=validation_fraction,
-                         n_iter_no_change=n_iter_no_change,
-                         tol=tol,
-                         ccp_alpha=ccp_alpha)
-
-    def predict(self, X):
-        raw_predictions = self.decision_function(X)
-        encoded_labels = \
-            self._loss._raw_prediction_to_decision(raw_predictions)
-        return self.classes_.take(encoded_labels, axis=0)
-
-    def staged_predict(self, X):
-        for raw_predictions in self._staged_raw_predict(X):
-            encoded_labels = \
-                self._loss._raw_prediction_to_decision(raw_predictions)
-            yield self.classes_.take(encoded_labels, axis=0)
-
-
-class cgb_reg(GradientBoostingRegressor, CondensedGradientBoosting):
-
-    def __init__(self,
-                 *,
-                 loss='ls',
-                 learning_rate=0.1,
-                 n_estimators=100,
-                 subsample=1.0,
-                 criterion='squared_error',
-                 min_samples_split=2,
-                 min_samples_leaf=1,
-                 min_weight_fraction_leaf=0.,
-                 max_depth=3,
-                 min_impurity_decrease=0.,
-                 init=None,
-                 random_state=None,
-                 max_features=None,
-                 alpha=0.9,
-                 verbose=0,
-                 max_leaf_nodes=None,
-                 warm_start=False,
-                 validation_fraction=0.1,
-                 n_iter_no_change=None,
-                 tol=1e-4,
-                 ccp_alpha=0.0,
-                 metric='rmse'):
-
-        super().__init__(loss=loss,
-                         learning_rate=learning_rate,
-                         n_estimators=n_estimators,
-                         criterion=criterion,
-                         min_samples_split=min_samples_split,
-                         min_samples_leaf=min_samples_leaf,
-                         min_weight_fraction_leaf=min_weight_fraction_leaf,
-                         max_depth=max_depth,
-                         init=init,
-                         subsample=subsample,
-                         max_features=max_features,
-                         min_impurity_decrease=min_impurity_decrease,
-                         random_state=random_state,
-                         verbose=verbose,
-                         alpha=alpha,
-                         max_leaf_nodes=max_leaf_nodes,
-                         warm_start=warm_start,
-                         validation_fraction=validation_fraction,
-                         n_iter_no_change=n_iter_no_change,
-                         tol=tol,
-                         ccp_alpha=ccp_alpha)
-        self.metric = metric
-
-    def predict(self, X):
-        X = check_array(X, dtype=DTYPE, order="C", accept_sparse='csr')
-        return self._raw_predict(X)
-
-    def score(self, X, y):
-        pred = self.predict(X)
-        if self.metric == 'rmse':
-            err = mean_squared_error(y_true=y, y_pred=pred,
-                                     squared=False, multioutput='raw_values')
-        else:
-            err = r2_score(y_true=y, y_pred=pred)
-        return err
