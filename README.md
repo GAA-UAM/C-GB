@@ -32,83 +32,8 @@ Models run on both Windows and Linux.
 
 To access more examples, plots, and related codes, please refer to [C_GB-EX](https://github.com/samanemami/C_GB-EX).
 
-In the following, the implementation of the algorithm for two problems (classification and regression) is described;
+On the [wiki](https://github.com/GAA-UAM/C-GB/wiki) page, the implementation of the algorithm for two problems (classification and regression) is described.
 
-### Classification
-
-```Python
-from cgb import cgb_clf
-import sklearn.datasets as dts
-from sklearn.model_selection import train_test_split
-
-X, y = dts.make_classification(
-    n_samples=2000, n_classes=3, n_clusters_per_class=2,
-    random_state=1, n_informative=4)
-
-x_train, x_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.3, random_state=1)
-
-model = cgb_clf(max_depth=20,
-                subsample=1,
-                loss='log_loss',
-                max_features='sqrt',
-                learning_rate=0.1,
-                random_state=1,
-                criterion="squared_error",
-                n_estimators=100)
-
-model.fit(x_train, y_train)
-print(model.score(x_test, y_test))
-confusion_matrix(y_test, model.predict(x_test))
-```
-
-```output
-Return the mean accuracy regarding the n_classes.
->>> 79.67%
-array([[151,  16,  24],
-       [ 14, 166,  23],
-       [ 29,  16, 161]], dtype=int64)
-```
-
-<hr>
-
-### Regression/ Multi-label classification
-
-```Python
-from cgb import cgb_reg
-import sklearn.datasets as dts
-from sklearn.model_selection import train_test_split
-
-seed = 1
-
-X, y = dts.make_regression(n_samples=100,
-                           n_features=100,
-                           n_targets=3,
-                           random_state=seed)
-                         
-                         
-x_train, x_test, y_train, y_test = train_test_split(X, y,
-                                                    test_size=0.3, 
-                                                    random_state=seed)
-
-
-model = cgb_reg(learning_rate=0.1,
-                subsample=1,
-                loss='ls',
-                max_features="sqrt",
-                n_estimators=100,
-                max_depth=3,
-                random_state=seed)
-
-model.fit(x_train, y_train)
-model.predict(x_test)
-model.score(x_test, y_test)
-```
-
-```output
-Return the RMSE for n_outputs
->>> array([164.36658903, 101.0311495 , 166.13994623])
-```
 
 # Requirements
 
@@ -177,7 +102,7 @@ In the following, you will find the different approaches to contribute;
 
 ## Updated
 
-23.Mar.2023
+09.Jul.2023
 
 ## Date-released
 
