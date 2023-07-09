@@ -6,7 +6,6 @@
 * [Introduction](#Introduction)
 * [Usage](#Usage)
 * [Citation](#Citation)
-* [Contributions](#Contributions)
 * [Version](#Version)
 
 # Introduction
@@ -38,25 +37,6 @@ On the [wiki](https://github.com/GAA-UAM/C-GB/wiki) page, the implementation of 
   year={2022}
 }
 ```
-
-## Keywords
-
-`Gradient Boosting`, `multi-output regression`, `multiclass-classification regression`
-
-# Contributions
-
-You may improve this project by creating an issue, reporting an improvement or a bug, forking, and of course, sending a pull request to the development branch.
-The authors and developers involved in this package can be found in the [contributor&#39;s file](contributors.txt).
-
-In the following, you will find the different approaches to contribute;
-
-<ul>
-    <li> Code reviews. </li>
-    <li> Create an issue. </li>
-    <li> GitHub pull request </li>
-    <li> Contribute to producing different experiments. </li>
-    <li> Write posts on the blog, Linkedin, your websites about `C-GB`. </li>
-</ul>
 
 ## Key members of C-GB
 
