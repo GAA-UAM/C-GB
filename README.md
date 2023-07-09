@@ -1,14 +1,10 @@
-# Condensed-Gradient Boosting
+# Condensed-Gradient Boosting (C-GB)
 
-# C-GB
-
-Condensed-Gradient Boosting
 
 # Table of contents
 
 * [Introduction](#Introduction)
 * [Usage](#Usage)
-* [Requirements](#Requirements)
 * [Citation](#Citation)
 * [Contributions](#Contributions)
 * [Version](#Version)
