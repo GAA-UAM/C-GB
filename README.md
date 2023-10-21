@@ -16,7 +16,8 @@ Gradient Boosting Machine is a machine learning model for classification and reg
 # Usage
 
 To train the CGB model for both multiclass classification and multioutput regression, first, it should be installed using pip.
-`pip install cgb`
+
+`pip install .`
 
 After importing the class, define the model with [hyperparameters](https://github.com/samanemami/C-GB/blob/main/docs/parameters.rst) or use the default values for it.
 Models run on both Windows and Linux.
@@ -45,7 +46,7 @@ On the [wiki](https://github.com/GAA-UAM/C-GB/wiki) page, the implementation of 
 
 # Version
 
-0.0.3
+0.0.5
 
 ## Updated
 
