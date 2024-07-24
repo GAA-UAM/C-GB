@@ -31,11 +31,17 @@ On the [wiki](https://github.com/GAA-UAM/C-GB/wiki) page, the implementation of 
 [Cite](CITATION.cff) this package as below.
 
 ```log
-@article{emami2022condensed,
-  title={Condensed Gradient Boosting},
-  author={Emami, Seyedsaman and Mart{\'\i}nez-Mu{\~n}oz, Gonzalo},
-  journal={arXiv preprint arXiv:2211.14599},
-  year={2022}
+@article{Emami2024,
+  author  = {Seyedsaman Emami and Gonzalo Martínez-Muñoz},
+  title   = {Condensed-gradient boosting},
+  journal = {International Journal of Machine Learning and Cybernetics},
+  year    = {2024},
+  volume  = {},
+  number  = {},
+  pages   = {},
+  doi     = {10.1007/s13042-024-02279-0},
+  url     = {https://doi.org/10.1007/s13042-024-02279-0},
+  issn    = {1868-808X}
 }
 ```
 
