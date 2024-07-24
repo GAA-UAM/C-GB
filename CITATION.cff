@@ -7,7 +7,6 @@ authors:
 - family-names: "Martínez-Muñoz"
   given-names: "Gonzalo"
   orcid: "https://orcid.org/0000-0002-6125-6056"
-title: "Condensed Gradient Boosting"
-version: 0.1.0
-date-released: 2021-10-01
-url: "https://arxiv.org/pdf/2211.14599.pdf"
+title: "Condensed-Gradient Boosting"
+Publication Date: 2024-07-23
+url: "https://link.springer.com/content/pdf/10.1007/s13042-024-02279-0.pdf"
